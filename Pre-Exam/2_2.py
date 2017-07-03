@@ -4,11 +4,11 @@ log api example: log('output is: ' + str(output))
 '''
 from urllib2 import urlopen
 
+import numpy as np
 import pandas as pd
-from scipy.stats import norm, chi2
+from scipy.stats import chi2, t
 
 from log_api import log
-import numpy as np
 
 
 class Solution():
@@ -21,7 +21,7 @@ class Solution():
         old_rate = [old_people[i] * 100.0 / total_people[i] for i in range(0, n)]
         mean = np.mean(old_rate)
         sd = np.std(old_rate)
-        mean_delta = sd / np.sqrt(n) * norm.ppf(0.95)
+        mean_delta = sd / np.sqrt(n) * t.ppf(0.95, n - 1)
         sqd_lower = (n - 1) * (sd ** 2) / chi2.ppf(1 - 0.05, n - 1)
         sqd_upper = (n - 1) * (sd ** 2) / chi2.ppf(0.05, n - 1)
         return [[mean - mean_delta, mean + mean_delta], [sqd_lower, sqd_upper]]
